@@ -1,4 +1,7 @@
-restapi
-restapi/*
+/node_modules/
+/restapi/
+/vendor/
 Db.php
-html/*
+html/
+/.project
+/composer.lock

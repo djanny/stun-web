@@ -4,7 +4,7 @@ use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
 require_once('../vendor/autoload.php');
 
 require_once('../lib/db.php');
-
+require_once('../lib/geo.php');
 
 if (!empty($_GET['action'])) {
 	$action = $_GET['action'];
@@ -223,6 +223,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
   </head>
   <body>
     
+    
     <?php 
     	include('templates/default/navigation.php');
     	include('templates/default/header.php');
@@ -240,6 +241,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 
     	include('templates/default/_maps.php');
     ?>
+    
+
   </body>
 </html>
 

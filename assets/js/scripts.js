@@ -8,10 +8,36 @@ window.$ = window.jQuery = jQuery;
 require('util');
 require('jquery.easing');
 require('bootstrap');
-var wowjs = require('wowjs');
 
+var L = require('leaflet');
+var wowjs = require('wowjs');
+var ltcMap = null;
+var restMap = null;
 
 $( document ).ready(function() {
+	L.Icon.Default.imagePath = '/img/leaflet/';
+	ltcMap = L.map('ltc-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
+	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	    subdomains: ['a','b','c']
+	}).addTo(ltcMap);
+	
+	restMap = L.map('rest-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
+	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	    subdomains: ['a','b','c']
+	}).addTo(restMap);
+	
+	
+	//initGeoLTC();
+	//initGeoRest();
+	//L.control.locate().addTo(ltcMap);
+	
+	/*
+	ltcMap.on('click', function(ev) {
+	    alert(ev.latlng); // ev is an event object (MouseEvent in this case)
+	});
+	*/
 	$('body').scrollspy({
         target: '.navbar-fixed-top',
         offset: 60
@@ -150,83 +176,28 @@ $(document).on('click','a[data-toggle=modal], button[data-toggle=modal]', functi
     $('.service_url').val(service_url);
   });
 
-
-
 (function($) {
     "use strict";
     new wowjs.WOW().init();
 })(jQuery);
 
-global.initMapLTC = function(turnServersJSON) {
-    var TURNservers = turnServersJSON;
-   
-    var myLatLng = {lat: 51.72702830741035, lng: 8.898925500000018};
 
-    var maprest = new google.maps.Map(document.getElementById('rest-map-api'), {
-      zoom: 3,
-      center: myLatLng,
-      styles: [{"featureType":"administrative","elementType":"all","stylers":[{"saturation":"-100"}]},{"featureType":"administrative.province","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"saturation":-100},{"lightness":"50"},{"visibility":"simplified"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":"-100"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"lightness":"30"}]},{"featureType":"road.local","elementType":"all","stylers":[{"lightness":"40"}]},{"featureType":"transit","elementType":"all","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]},{"featureType":"water","elementType":"labels","stylers":[{"lightness":-25},{"saturation":-100}]}]
-    });
+global.initGeoLTC = function(turnServersJSON) {
+	if (turnServersJSON != null) {
+		for (var i = 0; i < turnServersJSON.length; i++) {
+			var obj = turnServersJSON[i];
+			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title }).addTo(ltcMap);
+			marker.bindPopup('<h3>' + obj.title +'</h3>' + obj.content);
+		}
+	}
+}
 
-    function draw() {
-      for (var i = 0; i < TURNservers.length; i++) {
-        addMarkerWithTimeout(TURNservers[i], i * 200);
-      }
-    }
-
-    function addMarkerWithTimeout(TURNserver, timeout) {
-      window.setTimeout(function() {
-        var marker = new google.maps.Marker({
-          position: TURNserver.position,
-          map: maprest,
-          title: TURNserver.title,
-          animation: google.maps.Animation.DROP
-        });
-        marker.addListener('click', function() {
-          var infowindow = new google.maps.InfoWindow({
-            content: TURNserver.content
-          });
-          infowindow.open(maprest, marker);
-          
-        });
-      }, timeout);
-    }
-    draw();
-  }
-
-global.initMapREST = function(turnServersJSON) {
-    var TURNservers = turnServersJSON;
-   
-    var myLatLng = {lat: 51.72702830741035, lng: 8.898925500000018};
-
-    var mapltc = new google.maps.Map(document.getElementById('ltc-map-api'), {
-      zoom: 3,
-      center: myLatLng,
-      styles: [{"featureType":"administrative","elementType":"all","stylers":[{"saturation":"-100"}]},{"featureType":"administrative.province","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"saturation":-100},{"lightness":"50"},{"visibility":"simplified"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":"-100"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"lightness":"30"}]},{"featureType":"road.local","elementType":"all","stylers":[{"lightness":"40"}]},{"featureType":"transit","elementType":"all","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]},{"featureType":"water","elementType":"labels","stylers":[{"lightness":-25},{"saturation":-100}]}]
-    });
-
-    function draw() {
-      for (var i = 0; i < TURNservers.length; i++) {
-        addMarkerWithTimeout(TURNservers[i], i * 200);
-      }
-    }
-
-    function addMarkerWithTimeout(TURNserver, timeout) {
-      window.setTimeout(function() {
-        var marker = new google.maps.Marker({
-          position: TURNserver.position,
-          map: mapltc,
-          title: TURNserver.title,
-          animation: google.maps.Animation.DROP
-        });
-        marker.addListener('click', function() {
-          var infowindow = new google.maps.InfoWindow({
-            content: TURNserver.content
-          });
-          infowindow.open(mapltc, marker);
-          
-        });
-      }, timeout);
-    }
-    draw();
+global.initGeoRest = function(turnServersJSON) {
+	if (turnServersJSON != null) {
+		for (var i = 0; i < turnServersJSON.length; i++) {
+			var obj = turnServersJSON[i];
+			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title }).addTo(restMap);
+			marker.bindPopup('<h3>' + obj.title +'</h3>' + obj.content);
+		}
+	}
 }

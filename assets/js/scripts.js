@@ -10,12 +10,9 @@ require('jquery.easing');
 require('bootstrap');
 var wowjs = require('wowjs');
 
-(function($) {
-    "use strict";
 
-    new wowjs.WOW().init();
-
-    $('body').scrollspy({
+$( document ).ready(function() {
+	$('body').scrollspy({
         target: '.navbar-fixed-top',
         offset: 60
     });
@@ -40,7 +37,7 @@ var wowjs = require('wowjs');
     });
 
     $('#galleryModal').on('show.bs.modal', function (e) {
-       $('#galleryImage').attr("src",$(e.relatedTarget).data("src"));
+    	$('#galleryImage').attr("src",$(e.relatedTarget).data("src"));
     });
 
     $('#del-form').on('submit', function(e){
@@ -64,9 +61,7 @@ var wowjs = require('wowjs');
     });
 
     $('#contact-form').on('submit', function(e){
-        //e.preventDefault();
-        alert('a'); 
-        /*
+        e.preventDefault();
         $.ajax({
             url: '/', //this is the submit URL
             type: 'POST',
@@ -77,7 +72,6 @@ var wowjs = require('wowjs');
                   
             }
         });
-        */
     });
 
 
@@ -134,27 +128,33 @@ var wowjs = require('wowjs');
         });
     });
 
-    $(document).on('click','a[data-toggle=modal], button[data-toggle=modal]', function () {
-        // id
-        var data_id = '';
-        if (typeof $(this).data('id') !== 'undefined') {
-          data_id = $(this).data('id');
-        }
-        $('.row_id').val(data_id);
-        // table
-        var data_table = '';
-        if (typeof $(this).data('table') !== 'undefined') {
-          data_table = $(this).data('table');
-        }
-        $('#table').val(data_table);
-        var service_url = '';
-        if (typeof $(this).data('service_url') !== 'undefined') {
-          service_url = $(this).data('service_url');
-        }
-        $('.service_url').val(service_url);
-      });
-    
-    
+});
+
+$(document).on('click','a[data-toggle=modal], button[data-toggle=modal]', function () {
+    // id
+    var data_id = '';
+    if (typeof $(this).data('id') !== 'undefined') {
+      data_id = $(this).data('id');
+    }
+    $('.row_id').val(data_id);
+    // table
+    var data_table = '';
+    if (typeof $(this).data('table') !== 'undefined') {
+      data_table = $(this).data('table');
+    }
+    $('#table').val(data_table);
+    var service_url = '';
+    if (typeof $(this).data('service_url') !== 'undefined') {
+      service_url = $(this).data('service_url');
+    }
+    $('.service_url').val(service_url);
+  });
+
+
+
+(function($) {
+    "use strict";
+    new wowjs.WOW().init();
 })(jQuery);
 
 global.initMapLTC = function(turnServersJSON) {

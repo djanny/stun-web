@@ -1,7 +1,17 @@
 @charset "UTF-8";
 
+$stun_web_navigation_bg_color: #004361;
+$stun_web_navigation_font_color: #ddd;
+$stun_web_navigation_font_selected_color: #0080ff;
+$stun_web_a_focus_color: #0080ff;
+
+$grid-float-breakpoint: 1250px;
+
 @import "bootstrap";
 @import "animate";
 @import "ionicons";
 
 @import "_partials/_geant";
+@import "_partials/_navigation";
+
+

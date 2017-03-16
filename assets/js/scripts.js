@@ -172,7 +172,7 @@ $(document).on('click','a[data-toggle=modal], button[data-toggle=modal]', functi
 
 
 global.initGeoLeaflet = function() {
-	L.Icon.Default.imagePath = '/img/leaflet/';
+	L.Icon.Default.imagePath = '/dev/img/leaflet/';
 	ltcMap = L.map('ltc-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
 	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',

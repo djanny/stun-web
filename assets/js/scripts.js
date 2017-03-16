@@ -10,24 +10,13 @@ require('jquery.easing');
 require('bootstrap');
 
 var L = require('leaflet');
+require('leaflet.markercluster');
 var wowjs = require('wowjs');
 var ltcMap = null;
 var restMap = null;
+var commonMap = null;
 
 $( document ).ready(function() {
-	L.Icon.Default.imagePath = '/img/leaflet/';
-	ltcMap = L.map('ltc-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
-	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-	    subdomains: ['a','b','c']
-	}).addTo(ltcMap);
-	
-	restMap = L.map('rest-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
-	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-	    subdomains: ['a','b','c']
-	}).addTo(restMap);
-	
 	
 	//initGeoLTC();
 	//initGeoRest();
@@ -182,22 +171,83 @@ $(document).on('click','a[data-toggle=modal], button[data-toggle=modal]', functi
 })(jQuery);
 
 
+global.initGeoLeaflet = function() {
+	L.Icon.Default.imagePath = '/img/leaflet/';
+	ltcMap = L.map('ltc-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
+	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	    subdomains: ['a','b','c']
+	}).addTo(ltcMap);
+	
+	restMap = L.map('rest-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
+	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	    subdomains: ['a','b','c']
+	}).addTo(restMap);
+	
+	commonMap = L.map('common-map-api', {scrollWheelZoom: true,  center: [52.80, 7.5], zoom: 4, maxZoom: 17});
+	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	    subdomains: ['a','b','c']
+	}).addTo(commonMap);
+}
+
 global.initGeoLTC = function(turnServersJSON) {
 	if (turnServersJSON != null) {
+		var markers = L.markerClusterGroup({maxClusterRadius: 40, spiderfyOnMaxZoom: false, showCoverageOnHover: false, zoomToBoundsOnClick: false });
 		for (var i = 0; i < turnServersJSON.length; i++) {
 			var obj = turnServersJSON[i];
-			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title }).addTo(ltcMap);
+			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title });
 			marker.bindPopup('<h3>' + obj.title +'</h3>' + obj.content);
+			markers.addLayer(marker);
 		}
+		markers.on('clusterclick', function (a) {
+			a.layer.spiderfy();
+		});
+		ltcMap.addLayer(markers);
 	}
 }
 
 global.initGeoRest = function(turnServersJSON) {
 	if (turnServersJSON != null) {
+		var markers = L.markerClusterGroup({maxClusterRadius: 40, spiderfyOnMaxZoom: false, showCoverageOnHover: false, zoomToBoundsOnClick: false });
 		for (var i = 0; i < turnServersJSON.length; i++) {
 			var obj = turnServersJSON[i];
-			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title }).addTo(restMap);
+			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title });
 			marker.bindPopup('<h3>' + obj.title +'</h3>' + obj.content);
+			markers.addLayer(marker);
 		}
+		markers.on('clusterclick', function (a) {
+			a.layer.spiderfy();
+		});
+		restMap.addLayer(markers);
 	}
 }
+
+
+global.initGeoCommon = function(turnServersLtcJSON, turnServersRestJSON) {
+	var markers = L.markerClusterGroup({maxClusterRadius: 40, spiderfyOnMaxZoom: false, showCoverageOnHover: false, zoomToBoundsOnClick: false });
+	if (turnServersLtcJSON != null) {
+		for (var i = 0; i < turnServersLtcJSON.length; i++) {
+			var obj = turnServersLtcJSON[i];
+			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title });
+			marker.bindPopup('<h3>' + obj.title +'</h3>' + obj.content);
+			markers.addLayer(marker);
+		}
+	}
+	if (turnServersRestJSON != null) {
+		for (var i = 0; i < turnServersRestJSON.length; i++) {
+			var obj = turnServersRestJSON[i];
+			var marker = L.marker(new L.LatLng(obj.position.lat, obj.position.lng), { title: obj.title });
+			marker.bindPopup('<h3>' + obj.title +'</h3>' + obj.content);
+			markers.addLayer(marker);
+		}
+	}	
+	
+	markers.on('clusterclick', function (a) {
+		a.layer.spiderfy();
+	});
+	commonMap.addLayer(markers);
+}
+
+

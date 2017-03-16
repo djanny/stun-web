@@ -123,4 +123,18 @@ foreach ( $result as $row => $columns ) {
 			<div id="rest-map-api" style="height: 600px; width: 100%;"></div>
 		</div>
 	</section>
+  
+ <section class="bg-dark" id="common-map">
+         <div class="container">
+   <div class="row">
+    <div class="col-lg-12 text-center">
+     <h2 class="margin-top-0 text-primary">All Servers on Maps</h2>
+     <hr class="primary">
+    </div>
+   </div>
+ 
+   <div id="common-map-api" style="height: 600px; width: 100%;"></div>
+  </div>
+ </section>
+ 
 </section>

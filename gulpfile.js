@@ -38,12 +38,15 @@ var sassOpts = {
         outputStyle: 'nested',
         precison: 3,
         errLogToConsole: true,
-        includePaths: [bootstrapSass.in + 'assets/stylesheets', animateSass.in + 'vendor/assets/stylesheets/', ioniconsSass.in + 'dist/scss/']
+        includePaths: [bootstrapSass.in + 'assets/stylesheets', 
+        	animateSass.in + 'vendor/assets/stylesheets/', 
+        	ioniconsSass.in + 'dist/scss/']
 }
 
 var fonts = {
-        in: [assets+'fonts/*.*', bootstrapSass.in + 'assets/fonts/**/*', ioniconsSass.in + 'dist/fonts/**/*'],
-        out: dest + 'fonts/'
+        in: [assets+'fonts/*.*', bootstrapSass.in + 'assets/fonts/**/*', 
+        	ioniconsSass.in + 'dist/fonts/**/*'],
+        	out: dest + 'fonts/'
 };
 
 gulp.task('fonts', function () {
@@ -54,9 +57,14 @@ gulp.task('fonts', function () {
 
 gulp.task('styles', function() {
 	var processors = [
+		autoprefixer
+	];
+	/*
+	var processors = [
 		autoprefixer,
 		cssnano({safe: true})
 	];
+	*/
 	
 	gulp.src('assets/scss/**/*.scss')
 		.pipe(sass(sassOpts).on('error', sass.logError))
